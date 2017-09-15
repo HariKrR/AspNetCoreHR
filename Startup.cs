@@ -38,7 +38,7 @@ namespace netcore
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            //services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMemoryCache(options =>
             {
                 options.ExpirationScanFrequency = TimeSpan.FromMinutes(300);
@@ -78,7 +78,7 @@ namespace netcore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            //app.UseApplicationInsightsExceptionTelemetry();
+           //app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
