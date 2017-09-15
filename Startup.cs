@@ -7,19 +7,29 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace netcore
 {
     public class Startup
     {
+        public static string appRoutePath = string.Empty;
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+            {
+               // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+                builder.AddApplicationInsightsSettings(developerMode: true);
+            }
             Configuration = builder.Build();
+
+
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -28,14 +38,35 @@ namespace netcore
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            //services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddMemoryCache(options =>
+            {
+                options.ExpirationScanFrequency = TimeSpan.FromMinutes(300);
+            });
+           // services.AddSession();
+
             services.AddMvc();
-        }
+
+            //Get Database Connection 
+            //string _connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+           // _connectionString.Replace("//", "");
+
+            char[] delimiterChars = { '/', ':', '@', '?' };
+            //string[] strConn = _connectionString.Split(delimiterChars);
+           // strConn = strConn.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+          }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+           // appRoutePath = Path.Combine(env.ContentRootPath, "Data", "property.sql");
+
+            //app.UseSession();
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            //app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -47,13 +78,14 @@ namespace netcore
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            //app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                   template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
