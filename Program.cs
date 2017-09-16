@@ -18,13 +18,18 @@ namespace netcore
                 .AddJsonFile("hosting.json", optional: true)
                 .Build();
 
+            var url = $"http://*:{Environment.GetEnvironmentVariable("PORT")}/";
+
+            Console.WriteLine($"net core Using Url: {url}");
+
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseConfiguration(config)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseApplicationInsights()
+               // .UseApplicationInsights()
+                .UseUrls(url)
                 .Build();
 
             host.Run();
