@@ -3,7 +3,7 @@
   "description": "ASP.NET Core mvc website using Asp.Net Core",
   "website": "",
   "repository": "https://github.com/HariKrR/AspNetCoreHR",
-  "logo": "https://avatars2.githubusercontent.com/u/20908829?v=3&s=150",
+  "logo": " ",
   "keywords": [ "aspnet core", "aspnet core mvc" ],
   "buildpacks": [
     {
