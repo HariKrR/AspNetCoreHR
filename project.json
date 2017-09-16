@@ -43,7 +43,7 @@
   },
 
   "buildOptions": {
-    "outputName": "aspnetcoreHR",
+    "outputName": "netcore",
     "emitEntryPoint": true,
     "preserveCompilationContext": true
   },
